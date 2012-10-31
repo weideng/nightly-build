@@ -47,8 +47,8 @@ check_repositories() {
 build_otoro() {
 	cd B2G-otoro
 	git pull
-	#./config.sh otoro
-	#./build.sh
+	./config.sh otoro
+	./build.sh
 	cd ../nightly/otoro/
 	set `date '+%y-%m-%d'`
 	dir=$1$2$3
@@ -57,6 +57,7 @@ build_otoro() {
 	fi
 	cd ../../
 	cp -rp B2G-otoro/out/target/product/otoro/*.img nightly/otoro/$dir/
+	cp -rp flash/otoro-flash.sh nightly/otoro/$dir/
 	mv B2G-otoro/out B2G-otoro/$dir
 }
 
