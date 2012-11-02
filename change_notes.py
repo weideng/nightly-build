@@ -38,8 +38,8 @@ def find_rev(path):
     for HEAD and return it as a string"""
     # Should verify that rev-parse will only ever print the rev to stdout
     return git_op(['git', 'rev-parse', 'HEAD'], path=path)
-def get_diffs(path):
-    return git_op(['git', '', ''], path=path)
+def get_diffs(commit1, commit2,path):
+    return git_op(['git', 'shortlog', commit2,'--not', commit1], path=path)
 def main():
     #today = date.today()
     #yesterday = date.today() - timedelta(days=1)
@@ -82,7 +82,10 @@ def main():
                 log += 'Repository ' + k + ' has been changed\n'
 	        path = k.replace('/','_')
                 fs_path = os.path.join('/home/tiger/work/B2G-otoro/',k)
-                #print get_diffs(fs_path)
+                diff =  get_diffs(dic1[k], dic2[k],fs_path)
+                file_object = open(path+'.log','w')
+                file_object.write(diff);
+                file_object.close()
     file_object = open('project-change-info.log','w')
     file_object.write(log)
     file_object.close()
