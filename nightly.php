@@ -1,5 +1,12 @@
 #!/bin/bash
 
+TODAY=`date +%Y-%m-%d`
+YESTERDAY=`date -d yesterday +%Y-%m-%d`
+CURRENT_DIR=`pwd`
+
+OTORO_SRC="/home/wdeng/work/B2G-otoro"
+
+
 GECKO_URL="git://github.com/mozilla/releases-mozilla-central"
 GAIA_URL="git://github.com/mozilla-b2g/gaia"
 
@@ -44,21 +51,25 @@ check_repositories() {
 
 #. build.sh
 
-build_otoro() {
-	cd B2G-otoro
-	git pull
-	./config.sh otoro
-	./build.sh
-	cd ../nightly/otoro/
-	set `date '+%y-%m-%d'`
-	dir=$1$2$3
-	if [ ! -d "$dir" ]; then
-		mkdir $dir
+#$1 source code for device
+#$2 device name otoro, sp8810eabase.. 
+build_device() {
+	out_dir=$CURRENT_DIR/out/$2/$TODAY
+	if [ ! -d "$out_dir" ]; then
+		mkdir -p $out_dir
 	fi
-	cd ../../
-	cp -rp B2G-otoro/out/target/product/otoro/*.img nightly/otoro/$dir/
-	cp -rp flash/otoro-flash.sh nightly/otoro/$dir/
-	mv B2G-otoro/out B2G-otoro/$dir
+ 
+	cd $1
+	git pull > $out_dir/build.log
+	./config $2 >> $out_dir/build.log
+	./build.sh >> $out_dir/build.log	
+	cd $CURRENT_DIR
+	./add-commit.py $1 $out_dir/manifest.xml
+
+	cp -rp $1/out/target/product/$2/*.img $out_dir
+	cp -rp flash/$2-flash.sh $out_dir
+	mv $1/out $1/$TODAY
 }
 
-build_otoro
+export ANDROIDFS_DIR=/home/wdeng/work/B2G-otoro/android_backup/otoro-ics-0727
+build_device $OTORO_SRC otoro

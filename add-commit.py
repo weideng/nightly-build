@@ -57,6 +57,8 @@ def main(root_path,out):
             doc.writexml(of)
 
 if __name__ == "__main__":
-    root_path =  os.getcwd() + "/" + sys.argv[1]
-    #out = os.getcwd() + "/" +  sys.argv[2]
-    #main(root_path, out)
+    root_path = sys.argv[1]
+    out = sys.argv[2]
+    print root_path
+    print out
+    main(root_path, out)
