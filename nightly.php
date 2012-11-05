@@ -51,7 +51,7 @@ check_repositories() {
 
 #. build.sh
 
-#$1 source code for device
+#$1 source code direcotry
 #$2 device name otoro, sp8810eabase.. 
 build_device() {
 	out_dir=$CURRENT_DIR/out/$2/$TODAY
@@ -65,7 +65,7 @@ build_device() {
 	./build.sh >> $out_dir/build.log	
 	cd $CURRENT_DIR
 	./add-commit.py $1 $out_dir/manifest.xml
-
+	./change_notes.py $CURRENT_DIR/out/$2/$YESTERDAY/manifest.xml $out_dir/manifest.xml $1 $out_dir
 	cp -rp $1/out/target/product/$2/*.img $out_dir
 	cp -rp flash/$2-flash.sh $out_dir
 	mv $1/out $1/$TODAY

@@ -40,13 +40,9 @@ def find_rev(path):
     return git_op(['git', 'rev-parse', 'HEAD'], path=path)
 def get_diffs(commit1, commit2,path):
     return git_op(['git', 'shortlog', commit2,'--not', commit1], path=path)
-def main():
-    #today = date.today()
-    #yesterday = date.today() - timedelta(days=1)
-    file_path1 = os.getcwd() + "/otoro/12-10-31/manifest.xml"
-    file_path2 = os.getcwd() + "/otoro/12-11-01/manifest.xml"
-    doc1 = xml.dom.minidom.parse(file_path1)
-    doc2 = xml.dom.minidom.parse(file_path2)
+def main(path1,path2,root_dir,out_dir):
+    doc1 = xml.dom.minidom.parse(path1)
+    doc2 = xml.dom.minidom.parse(path2)
     dic1 = {}
     dic2 = {}
     log = ''
@@ -80,13 +76,13 @@ def main():
         for k in s3:
             if dic1[k] != dic2[k]:
                 log += 'Repository ' + k + ' has been changed\n'
-	        path = k.replace('/','_')
-                fs_path = os.path.join('/home/tiger/work/B2G-otoro/',k)
+	        path = out_dir + '/' + k.replace('/','_')
+                fs_path = os.path.join(root_dir+'/',k)
                 diff =  get_diffs(dic1[k], dic2[k],fs_path)
                 file_object = open(path+'.log','w')
                 file_object.write(diff);
                 file_object.close()
-    file_object = open('project-change-info.log','w')
+    file_object = open(out_dir + '/project-change-info.log','w')
     file_object.write(log)
     file_object.close()
       #  fs_path = os.path.join(root_path, manifest_path)
@@ -104,10 +100,4 @@ def main():
     #        doc.writexml(of)
 
 if __name__ == "__main__":
-    #print time.strftime("%Y-%m-%d", time.localtime(time.time()))
-    #print date.today()
-    #print date.today() - timedelta(days=1)
-    #root_path =  os.getcwd() + "/" + sys.argv[1]
-    #out = os.getcwd() + "/" +  sys.argv[2]
-
-    main()
+    main(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
