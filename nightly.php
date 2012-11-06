@@ -5,7 +5,7 @@ YESTERDAY=`date -d yesterday +%Y-%m-%d`
 CURRENT_DIR=`pwd`
 
 OTORO_SRC="/home/wdeng/work/B2G-otoro"
-
+SP8810EA_SRC="/home/wdeng/work/B2G-sp8810ea"
 
 GECKO_URL="git://github.com/mozilla/releases-mozilla-central"
 GAIA_URL="git://github.com/mozilla-b2g/gaia"
@@ -71,5 +71,26 @@ build_device() {
 	mv $1/out $1/$TODAY
 }
 
-export ANDROIDFS_DIR=/home/wdeng/work/B2G-otoro/android_backup/otoro-ics-0727
-build_device $OTORO_SRC otoro
+#export ANDROIDFS_DIR=/home/wdeng/work/B2G-otoro/android_backup/otoro-ics-0727
+#build_device $OTORO_SRC otoro
+
+build_sp8810ea() {
+	cd $SP8810EA_SRC
+	./repo sync
+	out_dir=$CURRENT_DIR/out/sp8810ea/$TODAY
+	if [ ! -d "$out_dir" ];then
+		mkdir -p $out_dir
+	fi
+
+	cd $SP8810EA_SRC
+	./repo sync > $out_dir/build.log
+	./build.sh >> $out_dir/build.log
+	cd $CURRENT_DIR
+	./add-commit.py $SP8810EA_SRC $out_dir/manifest.xml
+	#./change_notes.py $CURRENT_DIR/out/sp8810ea/$YESTERDAY/manifest.xml $out_dir/manifest.xml $SP8810EA_SRC $out_dir
+	cp -rp $SP8810EA_SRC/out/target/sp8810eabase/*.img $out_dir
+	#cp -rp flash
+	#mv $SP8810EA_SRC/out $SP8810EA_SRC/$TODAY
+}
+
+build_sp8810ea
