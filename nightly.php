@@ -67,30 +67,39 @@ build_device() {
 	./add-commit.py $1 $out_dir/manifest.xml
 	./change_notes.py $CURRENT_DIR/out/$2/$YESTERDAY/manifest.xml $out_dir/manifest.xml $1 $out_dir
 	cp -rp $1/out/target/product/$2/*.img $out_dir
-	cp -rp flash/$2-flash.sh $out_dir
+	cp -rp flash/flash.sh $out_dir
 	mv $1/out $1/$TODAY
 }
 
-#export ANDROIDFS_DIR=/home/wdeng/work/B2G-otoro/android_backup/otoro-ics-0727
+export ANDROIDFS_DIR=/home/wdeng/work/B2G-otoro/android_backup/otoro-ics-0727
 #build_device $OTORO_SRC otoro
 
+#$1 dir name
+make_patches() {
+	cd $1
+	git apply $CURRENT_DIR/patches/$1/*.patch
+	cd ..
+}
+
 build_sp8810ea() {
-	cd $SP8810EA_SRC
-	./repo sync
 	out_dir=$CURRENT_DIR/out/sp8810ea/$TODAY
 	if [ ! -d "$out_dir" ];then
 		mkdir -p $out_dir
 	fi
 
 	cd $SP8810EA_SRC
+	./repo forall -c "git reset --hard HEAD"
 	./repo sync > $out_dir/build.log
+	make_patches gecko
+	make_patches build
+	make_patches gonk-misc
 	./build.sh >> $out_dir/build.log
 	cd $CURRENT_DIR
 	./add-commit.py $SP8810EA_SRC $out_dir/manifest.xml
-	#./change_notes.py $CURRENT_DIR/out/sp8810ea/$YESTERDAY/manifest.xml $out_dir/manifest.xml $SP8810EA_SRC $out_dir
-	cp -rp $SP8810EA_SRC/out/target/sp8810eabase/*.img $out_dir
-	#cp -rp flash
-	#mv $SP8810EA_SRC/out $SP8810EA_SRC/$TODAY
+	./change_notes.py $CURRENT_DIR/out/sp8810ea/$YESTERDAY/manifest.xml $out_dir/manifest.xml $SP8810EA_SRC $out_dir
+	cp -rp $SP8810EA_SRC/out/target/product/sp8810ea/*.img $out_dir
+	cp -rp flash/flash.sh $out_dir
+	mv $SP8810EA_SRC/out $SP8810EA_SRC/$TODAY
 }
 
 build_sp8810ea

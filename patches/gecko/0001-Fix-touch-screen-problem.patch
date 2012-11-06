@@ -1,0 +1,55 @@
+From 8c4ac901508cc61f2ae302e5c102fe41ad2f3502 Mon Sep 17 00:00:00 2001
+From: wei deng <wdeng@mozilla.com>
+Date: Thu, 2 Aug 2012 14:42:02 +0800
+Subject: [PATCH] Fix touch screen problem
+
+---
+ widget/gonk/libui/InputReader.cpp |    8 ++++----
+ widget/gonk/libui/InputReader.h   |    3 ++-
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/widget/gonk/libui/InputReader.cpp b/widget/gonk/libui/InputReader.cpp
+index ea19c01..bd5d343 100644
+--- a/widget/gonk/libui/InputReader.cpp
++++ b/widget/gonk/libui/InputReader.cpp
+@@ -1595,10 +1595,10 @@ void MultiTouchMotionAccumulator::process(const RawEvent* rawEvent) {
+                     slot->mAbsMTTrackingId = rawEvent->value;
+                 }
+                 break;
+-            case ABS_MT_PRESSURE:
++/*            case ABS_MT_PRESSURE:
+                 slot->mInUse = true;
+                 slot->mAbsMTPressure = rawEvent->value;
+-                break;
++                break;*/
+             case ABS_MT_DISTANCE:
+                 slot->mInUse = true;
+                 slot->mAbsMTDistance = rawEvent->value;
+@@ -5609,8 +5609,8 @@ void MultiTouchInputMapper::syncTouch(nsecs_t when, bool* outHavePointerIds) {
+         outPointer.tiltY = 0;
+ 
+         // Mozilla bug 739417
+-        if (!outPointer.touchMajor)
+-            continue;
++/*        if (!outPointer.touchMajor)
++            continue;*/
+ 
+         outPointer.toolType = inSlot->getToolType();
+         if (outPointer.toolType == AMOTION_EVENT_TOOL_TYPE_UNKNOWN) {
+diff --git a/widget/gonk/libui/InputReader.h b/widget/gonk/libui/InputReader.h
+index 7bd9958..b5aa41b 100644
+--- a/widget/gonk/libui/InputReader.h
++++ b/widget/gonk/libui/InputReader.h
+@@ -665,7 +665,8 @@ struct RawPointerData {
+     void getCentroidOfTouchingPointers(float* outX, float* outY) const;
+ 
+     inline void markIdBit(uint32_t id, bool isHovering) {
+-        if (isHovering) {
++       isHovering = false;
++	    if (isHovering) {
+             hoveringIdBits.markBit(id);
+         } else {
+             touchingIdBits.markBit(id);
+-- 
+1.7.5.4
+
