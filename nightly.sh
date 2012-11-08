@@ -105,6 +105,7 @@ build_sp8810ea() {
 	cp -rp $SP8810EA_SRC/out/target/product/sp8810ea/system.img $out_dir
 	cp -rp $SP8810EA_SRC/out/target/product/sp8810ea/userdata.img $out_dir
 	cp -rp flash/flash.sh $out_dir
+	cp -rp patches $out_dir
 	mv $SP8810EA_SRC/out $SP8810EA_SRC/$TODAY
 }
 
