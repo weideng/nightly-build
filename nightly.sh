@@ -54,25 +54,25 @@ check_repositories() {
 #$1 source code direcotry
 #$2 device name otoro, sp8810eabase.. 
 build_device() {
-	out_dir=$CURRENT_DIR/out/$2/$TODAY
+	out_dir=$CURRENT_DIR/out/$TODAY/$2
 	if [ ! -d "$out_dir" ]; then
 		mkdir -p $out_dir
 	fi
  
 	cd $1
 	git pull > $out_dir/build.log
-	./config $2 >> $out_dir/build.log
+	./config.sh $2 >> $out_dir/build.log
 	./build.sh >> $out_dir/build.log	
 	cd $CURRENT_DIR
 	./add-commit.py $1 $out_dir/manifest.xml
-	./change_notes.py $CURRENT_DIR/out/$2/$YESTERDAY/manifest.xml $out_dir/manifest.xml $1 $out_dir
+	./change_notes.py $CURRENT_DIR/out/$YESTERDAY/$2/manifest.xml $out_dir/manifest.xml $1 $out_dir
 	cp -rp $1/out/target/product/$2/*.img $out_dir
 	cp -rp flash/flash.sh $out_dir
 	mv $1/out $1/$TODAY
 }
 
 export ANDROIDFS_DIR=/home/wdeng/work/B2G-otoro/android_backup/otoro-ics-0727
-#build_device $OTORO_SRC otoro
+build_device $OTORO_SRC otoro
 
 #$1 dir name
 make_patches() {
@@ -82,7 +82,7 @@ make_patches() {
 }
 
 build_sp8810ea() {
-	out_dir=$CURRENT_DIR/out/sp8810ea/$TODAY
+	out_dir=$CURRENT_DIR/out/$TODAY/sp8810ea
 	if [ ! -d "$out_dir" ];then
 		mkdir -p $out_dir
 	fi
@@ -96,7 +96,7 @@ build_sp8810ea() {
 	./build.sh >> $out_dir/build.log
 	cd $CURRENT_DIR
 	./add-commit.py $SP8810EA_SRC $out_dir/manifest.xml
-	./change_notes.py $CURRENT_DIR/out/sp8810ea/$YESTERDAY/manifest.xml $out_dir/manifest.xml $SP8810EA_SRC $out_dir
+	./change_notes.py $CURRENT_DIR/out/$YESTERDAY/sp8810ea/manifest.xml $out_dir/manifest.xml $SP8810EA_SRC $out_dir
 	cp -rp $SP8810EA_SRC/out/target/product/sp8810ea/*.img $out_dir
 	cp -rp flash/flash.sh $out_dir
 	mv $SP8810EA_SRC/out $SP8810EA_SRC/$TODAY
