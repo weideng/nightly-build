@@ -74,7 +74,7 @@ build_device() {
 	./change_notes.py $CURRENT_DIR/out/$YESTERDAY/$2/manifest.xml $out_dir/manifest.xml $1 $out_dir
 	cp -rp $1/out/target/product/$2/system.img $out_dir
 	cp -rp $1/out/target/product/$2/userdata.img $out_dir
-	if [ -f "$1/out/target/product/$2/boot.img"]; then
+	if [ -f "$1/out/target/product/$2/boot.img" ]; then
 		cp -rp $1/out/target/product/$2/userdata.img $out_dir
 	fi
 	cp -rp flash/flash.sh $out_dir
