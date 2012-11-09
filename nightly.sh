@@ -124,6 +124,6 @@ build_sp8810ea() {
 
 #if otoro was built successfully, then build sp8810ea
 if [ ! -f "/home/wdeng/work/nightly-build/out/$TODAY/failed" ]; then
-	#build_sp8810ea
+	build_sp8810ea
 fi
 
