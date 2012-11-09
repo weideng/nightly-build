@@ -2,6 +2,7 @@
 
 TODAY=`date +%Y-%m-%d`
 YESTERDAY=`date -d yesterday +%Y-%m-%d`
+cd /home/wdeng/work/nightly-build
 CURRENT_DIR=`pwd`
 
 OTORO_SRC="/home/wdeng/work/b2g-otoro"
@@ -60,6 +61,7 @@ build_device() {
 	fi
  
 	cd $1
+	rm -rf objdir-gecko/
 	git pull > $out_dir/build.log
 	./config.sh $2 >> $out_dir/build.log
 	./build.sh >> $out_dir/build.log	
@@ -92,6 +94,7 @@ build_sp8810ea() {
 	fi
 
 	cd $SP8810EA_SRC
+	rm -rf objdir-gecko/
 	./repo forall -c "git reset --hard HEAD"
 	./repo sync > $out_dir/build.log
 	make_patches gecko
