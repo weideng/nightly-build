@@ -61,6 +61,10 @@ build_device() {
 	fi
  
 	cd $1
+
+	git reset --hard HEAD
+	git apply build.patch
+
 	rm -rf objdir-gecko/
 	git pull > $out_dir/build.log
 	./config.sh $2 >> $out_dir/build.log
@@ -74,6 +78,9 @@ build_device() {
 		cp -rp $1/out/target/product/$2/userdata.img $out_dir
 	fi
 	cp -rp flash/flash.sh $out_dir
+	if [ -d "$1/$TODAY" ]; then
+		rm -rf $1/$TODAY
+	fi
 	mv $1/out $1/$TODAY
 }
 
@@ -109,7 +116,14 @@ build_sp8810ea() {
 	cp -rp $SP8810EA_SRC/out/target/product/sp8810ea/userdata.img $out_dir
 	cp -rp flash/flash.sh $out_dir
 	cp -rp patches $out_dir
+	if [ -d "$SP8810EA_SRC/$TODAY" ]; then
+		rm -rf $SP8810EA_SRC/$TODAY
+	fi 
 	mv $SP8810EA_SRC/out $SP8810EA_SRC/$TODAY
 }
 
-build_sp8810ea
+#if otoro was built successfully, then build sp8810ea
+if [ ! -f "/home/wdeng/work/nightly-build/out/$TODAY/failed" ]; then
+	#build_sp8810ea
+fi
+
